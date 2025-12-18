@@ -1,0 +1,257 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+button {
+  background-color: white;
+  border: 2px solid black;
+}
+
+button:hover {
+  background-color: black;
+  border-color: black;
+  color: white;
+}
+
+.navbar_button {
+  margin-left: 5px;
+  height: 100%;
+  width: 45%;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.navbar {
+  position: fixed;
+  width: 40%;
+  left: 50%;
+  bottom: 5%;
+  transform: translateX(-50%);
+}
+
+.teams-component {
+  position: fixed;
+  width: 80vw;
+  height: 10%;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  background-color: white;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: white;
+  margin-bottom: 20px;
+  scrollbar-width: auto;
+  -ms-overflow-style: auto;
+  border: 2px solid black;
+  padding: 10px 20px;
+  box-sizing: border-box;
+}
+
+.teams-component::-webkit-scrollbar {
+  display: none;
+}
+
+.team-list {
+  display: flex;
+  gap: 20px; 
+  list-style: none;
+  border-color: black;
+  color: black;
+  width: max-content;
+  padding: 0;
+  margin: 0;
+}
+
+.team-item {
+  min-width: 50px;
+  text-align: center;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 25px;
+  border: 2px solid black;
+  color: black;
+  cursor: grab;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.team-item:active {
+  cursor: grabbing;
+}
+
+.team-item.dragging {
+  opacity: 0.5;
+}
+
+.tierlist {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  background: transparent;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.tier-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 0 0 calc(100% / 5);
+  border-bottom: 2px solid black;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+.tier-label {
+  width: 10%;
+  text-align: center;
+  font-weight: bold;
+  border-right: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.tier-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.topbar {
+  position: fixed;
+  left: 50%;
+  top: 3%;
+  width: 100%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+
+.topbar-menu {
+  position: fixed;
+  left: 10%;
+  top: 25%;
+}
+
+.topbar-title {
+  transition: transform 1.0s ease;
+}
+
+.topbar-title:hover {
+  transform: rotate(360deg);
+}
+
+.team-item.drag-over {
+  background: #eef;
+  border: 2px dashed #66f;
+}
+
+.tier-content.drag-over {
+  background-color: #f0f0f0;
+  border: 2px dashed #646cff;
+}
+
+.tier-team-item {
+  display: inline-block;
+  background-color: #646cff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: grab;
+  user-select: none;
+}
+
+.tier-team-item:hover {
+  background-color: #5155d0;
+  cursor: pointer;
+}
+
+.tier-team-item:active {
+  cursor: grabbing;
+}
+
+.event-text {
+  color: black;
+}
+
+.event-input {
+  color: black;
+  border: 2px, solid, black;
+}
+
+.set-event-button {
+  color: white;
+  background-color: blue;
+  border: none;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.event-code {
+  margin-left: 10px;
+}
+
+.set-event-button {
+  margin-top: 5px;
+}
+
+.event-input {
+  margin-left: 5px;
+}
