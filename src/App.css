@@ -255,3 +255,29 @@ button:hover {
 .event-input {
   margin-left: 5px;
 }
+
+.search-teams-container {
+  position: fixed;
+  left: 50%;
+  bottom: calc(15% + 70px);
+  transform: translateX(-50%);
+}
+
+.menu-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: black;
+}
+
+.team-colored {
+  background-color: var(--primary);
+  color: var(--secondary);
+  border-color: var(--secondary);
+}

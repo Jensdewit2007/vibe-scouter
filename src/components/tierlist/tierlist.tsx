@@ -1,53 +1,33 @@
-import TierRow from "./tier_row"
-
-interface Team {
-  id: number;
-  name: string;
-}
+import type { Team } from '../../types'
+import TierRow from './tier_row' 
 
 interface TierlistProps {
-  tierTeams: { [key: string]: Team[] };
-  onAddTeam: (tierName: string, team: Team) => void;
-  onRemoveTeam: (tierName: string, teamId: number) => void;
+  tierTeams: { [key: string]: Team[] }
+  onAddTeam: (tierName: string, team: Team) => void
+  onRemoveTeam: (tierName: string, teamId: number) => void
+  useTeamColors: boolean
 }
 
-function Tierlist({ tierTeams, onAddTeam, onRemoveTeam }: TierlistProps) {
+function Tierlist({
+  tierTeams,
+  onAddTeam,
+  onRemoveTeam,
+  useTeamColors,
+}: TierlistProps) {
   return (
-    <>
-      <div className="tierlist">
+    <div className="tierlist">
+      {Object.entries(tierTeams).map(([tierName, teams]) => (
         <TierRow
-          TierName="S"
-          teams={tierTeams.S}
-          onAddTeam={(team) => onAddTeam("S", team)}
-          onRemoveTeam={(teamId) => onRemoveTeam("S", teamId)}
+          key={tierName}
+          TierName={tierName}
+          teams={teams}
+          onAddTeam={team => onAddTeam(tierName, team)}
+          onRemoveTeam={teamId => onRemoveTeam(tierName, teamId)}
+          useTeamColors={useTeamColors}
         />
-        <TierRow
-          TierName="A"
-          teams={tierTeams.A}
-          onAddTeam={(team) => onAddTeam("A", team)}
-          onRemoveTeam={(teamId) => onRemoveTeam("A", teamId)}
-        />
-        <TierRow
-          TierName="B"
-          teams={tierTeams.B}
-          onAddTeam={(team) => onAddTeam("B", team)}
-          onRemoveTeam={(teamId) => onRemoveTeam("B", teamId)}
-        />
-        <TierRow
-          TierName="C"
-          teams={tierTeams.C}
-          onAddTeam={(team) => onAddTeam("C", team)}
-          onRemoveTeam={(teamId) => onRemoveTeam("C", teamId)}
-        />
-        <TierRow
-          TierName="D"
-          teams={tierTeams.D}
-          onAddTeam={(team) => onAddTeam("D", team)}
-          onRemoveTeam={(teamId) => onRemoveTeam("D", teamId)}
-        />
-      </div>
-    </>
-  );
+      ))}
+    </div>
+  )
 }
 
 export default Tierlist

@@ -4,8 +4,12 @@ import Teams from './components/teams/teams'
 import Tierlist from './components/tierlist/tierlist'
 import Topbar from './components/topbar/topbar'
 import { useState, useEffect } from 'react'
+import type { Team } from './types'
 
-type Team = { id: number; name: string }
+type SavedTierState = {
+  availableTeams: Team[]
+  tierTeams: { [key: string]: Team[] }
+}
 
 function App() {
   const [availableTeams, setAvailableTeams] = useState<Team[]>([])
@@ -19,18 +23,26 @@ function App() {
     C: [],
     D: [],
   })
+  const [useTeamColors, setUseTeamColors] = useState(
+    localStorage.getItem('useTeamColors') === 'true'
+  )
 
   const apiKey = import.meta.env.VITE_TBA_API_KEY
   const eventKey = localStorage.getItem('eventKey') || '2025cur'
+  const STORAGE_KEY = `tierlist_${eventKey}`
 
   useEffect(() => {
-    setLoading(true)
-    setError(null)
-    
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const parsed: SavedTierState = JSON.parse(saved)
+      setAvailableTeams(parsed.availableTeams)
+      setTierTeams(parsed.tierTeams)
+      setLoading(false)
+      return
+    }
+
     fetch(`https://www.thebluealliance.com/api/v3/event/${eventKey}/teams`, {
-      headers: {
-        'X-TBA-Auth-Key': apiKey,
-      },
+      headers: { 'X-TBA-Auth-Key': apiKey },
     })
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch teams')
@@ -41,20 +53,64 @@ function App() {
           id: team.team_number,
           name: String(team.team_number),
         }))
-        setAvailableTeams(teams)
-        setError(null)
+
+        // Fetch colors from color API
+        const teamNumbers = teams.map(t => t.id)
+        const colorUrl =
+          'https://api.frc-colors.com/v1/team?' +
+          teamNumbers.map(tn => `team=${tn}`).join('&')
+
+        fetch(colorUrl)
+          .then(res => {
+            if (!res.ok) throw new Error('Failed to fetch colors')
+            return res.json()
+          })
+          .then(colorData => {
+            const colorTeams = teams.map(team => {
+              const colorInfo = colorData.teams?.[team.id]
+              if (colorInfo && colorInfo.colors?.verified) {
+                return {
+                  ...team,
+                  primaryColor: colorInfo.colors.primaryHex,
+                  secondaryColor: colorInfo.colors.secondaryHex,
+                }
+              }
+              return team
+            })
+
+            setAvailableTeams(colorTeams)
+            setTierTeams({ S: [], A: [], B: [], C: [], D: [] })
+
+            localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify({
+                availableTeams: colorTeams,
+                tierTeams: { S: [], A: [], B: [], C: [], D: [] },
+              })
+            )
+          })
+          .catch(err => {
+            console.error(err)
+            setAvailableTeams(teams)
+            setTierTeams({ S: [], A: [], B: [], C: [], D: [] })
+            setError('Failed to fetch team colors, showing teams without colors.')
+          })
       })
       .catch(err => {
         setError(err.message)
-        setAvailableTeams([])
       })
       .finally(() => setLoading(false))
-  }, [eventKey, apiKey])
+  }, [eventKey, apiKey, STORAGE_KEY])
 
-  const filteredTeams = availableTeams.filter(team =>
-    team.name.toLowerCase().includes(search.toLowerCase())
-  )
-  .sort((a, b) => a.id - b.id)
+  // Persist changes
+  useEffect(() => {
+    if (loading) return
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ availableTeams, tierTeams }))
+  }, [availableTeams, tierTeams, STORAGE_KEY, loading])
+
+  const filteredTeams = availableTeams
+    .filter(team => team.name.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => a.id - b.id)
 
   const addTeamToTier = (tierName: string, team: Team) => {
     setAvailableTeams(prev => prev.filter(t => t.id !== team.id))
@@ -64,47 +120,54 @@ function App() {
       Object.keys(updated).forEach(t => {
         updated[t] = updated[t].filter(x => x.id !== team.id)
       })
-      if (!updated[tierName].find(x => x.id === team.id)) {
-        updated[tierName] = [...updated[tierName], team]
-      }
+      updated[tierName] = [...updated[tierName], team]
       return updated
     })
   }
 
   const removeTeamFromTier = (tierName: string, teamId: number) => {
     setTierTeams(prev => {
-      const teamToRemove = prev[tierName].find(t => t.id === teamId)
-      const updated = { ...prev, [tierName]: prev[tierName].filter(t => t.id !== teamId) }
-      if (teamToRemove) {
-        setAvailableTeams(prevA => {
-          if (prevA.find(t => t.id === teamToRemove.id)) return prevA
-          return [...prevA, teamToRemove]
-        })
+      const team = prev[tierName].find(t => t.id === teamId)
+      const updated = {
+        ...prev,
+        [tierName]: prev[tierName].filter(t => t.id !== teamId),
       }
+
+      if (team) {
+        setAvailableTeams(prevA =>
+          prevA.find(t => t.id === team.id) ? prevA : [...prevA, team]
+        )
+      }
+
       return updated
     })
   }
 
   return (
     <>
-      <Topbar />
+      <Topbar useTeamColors={useTeamColors} setUseTeamColors={setUseTeamColors} />
+
       <Tierlist
         tierTeams={tierTeams}
-        onAddTeam={(tier, team) => addTeamToTier(tier, team)}
-        onRemoveTeam={(tier, id) => removeTeamFromTier(tier, id)}
+        onAddTeam={addTeamToTier}
+        onRemoveTeam={removeTeamFromTier}
+        useTeamColors={useTeamColors}
       />
+
       {loading && <p>Loading teams...</p>}
       {error && <p>Error loading teams: {error}</p>}
-      <div style={{ position: 'fixed', bottom: '22%', left: '50%', transform: 'translateX(-50%)' }}>
+
+      <div className="search-teams-container">
         <input
           type="text"
           placeholder="Search teams..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ padding: '8px', borderRadius: '4px', border: '2px solid black' }}
+          onChange={e => setSearch(e.target.value)}
+          className="search-teams"
         />
       </div>
-      <Teams teams={filteredTeams} />
+
+      <Teams teams={filteredTeams} useTeamColors={useTeamColors} />
       <Navbar />
     </>
   )
