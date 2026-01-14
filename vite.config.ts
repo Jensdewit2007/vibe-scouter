@@ -8,12 +8,14 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: false, // Disable PWA in dev/preview
+        enabled: true, // Enable PWA in dev mode
+        type: 'module',
+        navigateFallback: 'index.html',
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'logo.png', 'assets/*'],
       manifest: {
-        name: '2026 Scouting Tool',
-        short_name: 'Scouting Tool',
+        name: '4481 Team Rembrandts 2026 Scouting Tool',
+        short_name: '2026 scouting tool',
         description: 'A progressive web app for scouting FRC teams and creating tier lists',
         start_url: '/',
         scope: '/',
