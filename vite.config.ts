@@ -7,6 +7,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: false, // Disable PWA in dev/preview
+      },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'logo.png', 'assets/*'],
       manifest: {
         name: '2026 Scouting Tool',
