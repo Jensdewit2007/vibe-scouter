@@ -9,14 +9,14 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'logo.png', 'assets/*'],
       manifest: {
-        name: 'Vibe Scouter - FRC Team Scouting Tool',
-        short_name: 'Vibe Scouter',
+        name: '2026 Scouting Tool',
+        short_name: 'Scouting Tool',
         description: 'A progressive web app for scouting FRC teams and creating tier lists',
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#ff6600',
+        background_color: '#000000',
+        theme_color: '#000000',
         orientation: 'portrait-primary',
         icons: [
           {
@@ -70,7 +70,7 @@ export default defineConfig({
               cacheName: 'tba-api-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 24 * 60 * 60, // 24 hours
+                maxAgeSeconds: 24 * 60 * 60,
               },
             },
           },
@@ -81,7 +81,7 @@ export default defineConfig({
               cacheName: 'frc-colors-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 24 * 60 * 60, // 24 hours
+                maxAgeSeconds: 24 * 60 * 60,
               },
             },
           },
