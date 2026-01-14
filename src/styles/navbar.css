@@ -1,0 +1,43 @@
+.navbar {
+  position: fixed;
+  width: 40%;
+  left: 50%;
+  bottom: 5%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.navbar_buttons {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+}
+
+.navbar_button {
+  flex: 1;
+  padding: 12px 20px;
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navbar_button:hover {
+  background-color: #f0f0f0;
+  border-color: black;
+}
+
+.navbar_button.active {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+.navbar_button.active:hover {
+  background-color: #333;
+}

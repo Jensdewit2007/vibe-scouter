@@ -1,0 +1,95 @@
+.teams-component {
+  position: fixed;
+  width: 80vw;
+  height: 10%;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  background-color: white;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: black;
+  margin-bottom: 20px;
+  scrollbar-width: auto;
+  -ms-overflow-style: auto;
+  border: 2px solid black;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  z-index: 50;
+}
+
+.teams-component::-webkit-scrollbar {
+  height: 8px;
+}
+
+.teams-component::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.teams-component::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.teams-component::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.team-list {
+  display: flex;
+  gap: 15px;
+  list-style: none;
+  width: max-content;
+  padding: 0;
+  margin: 0;
+}
+
+.team-item {
+  min-width: 80px;
+  text-align: center;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 25px;
+  border: 2px solid black;
+  color: black;
+  cursor: grab;
+  flex-shrink: 0;
+  user-select: none;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.team-item:hover {
+  border-color: inherit;
+  transform: scale(1.05);
+}
+
+.team-item:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.team-item.dragging {
+  opacity: 0.5;
+}
+
+.team-item.drag-over {
+  background: #eef;
+  border: 2px dashed inherit;
+}
+
+.search-teams-container {
+  position: fixed;
+  left: 50%;
+  bottom: calc(15% + 70px);
+  transform: translateX(-50%);
+  z-index: 50;
+}
+
+.search-teams {
+  padding: 10px 15px;
+  border: 2px solid black;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 200px;
+}

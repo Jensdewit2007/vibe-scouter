@@ -1,0 +1,102 @@
+.tierlist {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  background: transparent;
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 40;
+}
+
+.tier-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 0 0 calc(100% / 5);
+  border-bottom: 2px solid black;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+.tier-label {
+  width: 10%;
+  text-align: center;
+  font-weight: bold;
+  border-right: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: white;
+  color: black;
+}
+
+.tier-content {
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 5px;
+  padding: 5px;
+  background-color: white;
+}
+
+.tier-content.drag-over {
+  background-color: #f0f0f0;
+  border: 2px dashed #ff6600;
+}
+
+.tier-team-item {
+  display: inline-block;
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 25px;
+  margin: 5px;
+  cursor: grab;
+  user-select: none;
+  border: 2px solid black;
+  min-width: 50px;
+  text-align: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.tier-team-item:hover {
+  background-color: #f0f0f0;
+  border-color: inherit;
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.tier-team-item:active {
+  cursor: grabbing;
+}
+
+.tier-content::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tier-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.tier-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.tier-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

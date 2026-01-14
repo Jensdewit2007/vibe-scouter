@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import type { Team } from '../../types'
-import '../../App.css'
 
 interface DetailsPageProps {
   availableTeams: Team[]
@@ -15,7 +14,7 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
   const [teamName, setTeamName] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
-  const eventKey = localStorage.getItem('eventKey') || '2025cur'
+  const eventKey = localStorage.getItem('eventKey') || '2026tuis'
   const apiKey = import.meta.env.VITE_TBA_API_KEY
 
   // Combine all teams (ranked + unranked)
@@ -81,7 +80,7 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
 
   return (
     <div className="details-page-container">
-      {/* Top Left - Team Selector */}
+      {/* Team Selector - Under Title, Centered */}
       <div className="details-team-selector">
         <label>Select Team:</label>
         <select
@@ -103,14 +102,14 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
         {selectedTeam ? (
           <>
             <div className="matches-header">
-              <h2>{teamName} (Team {selectedTeam.name})</h2>
+              <h2>{teamName}</h2>
             </div>
 
             {/* Next Match */}
             <div className="next-match-section">
               <h3>Next Match</h3>
               {loading ? (
-                <p>Loading matches...</p>
+                <p style={{ fontSize: '0.9rem', color: '#999' }}>Loading...</p>
               ) : nextMatch ? (
                 <div className="next-match-display">
                   <div className="match-badge">
@@ -129,7 +128,7 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
             <div className="all-matches-section">
               <h3>All Matches</h3>
               {loading ? (
-                <p>Loading...</p>
+                <p style={{ fontSize: '0.9rem', color: '#999' }}>Loading...</p>
               ) : matches.length === 0 ? (
                 <p className="no-matches">No matches found</p>
               ) : (

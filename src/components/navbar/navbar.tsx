@@ -1,5 +1,4 @@
 import NavbarButton from './navbar_button'
-import '../../App.css'
 
 interface NavbarProps {
   currentPage: string

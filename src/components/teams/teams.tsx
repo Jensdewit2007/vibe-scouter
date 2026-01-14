@@ -1,5 +1,6 @@
 import { useState} from 'react'
 import type { Team } from '../../types'
+import '../../styles/teams.css'
 
 interface TeamsProps {
   teams: Team[]
@@ -32,6 +33,7 @@ function Teams({ teams, useTeamColors }: TeamsProps) {
             ? {
                 backgroundColor: team.primaryColor || 'white',
                 color: team.secondaryColor || 'black',
+                borderColor: team.primaryColor || 'black',
               }
             : {}
 

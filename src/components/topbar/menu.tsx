@@ -1,7 +1,6 @@
 import menuImg from '../../assets/menu.png'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
-
 interface MenuProps {
   useTeamColors: boolean
   setUseTeamColors: (val: boolean) => void
@@ -16,7 +15,7 @@ function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuPr
   const [nameDropdownOpen, setNameDropdownOpen] = useState(false)
 
   const [eventCode, setEventCode] = useState(
-    localStorage.getItem('eventKey') || '2025cur'
+    localStorage.getItem('eventKey') || '2026tuis'
   )
   const [inputCode, setInputCode] = useState(eventCode)
 
@@ -144,10 +143,10 @@ function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuPr
                   {' '}Auto export on change
                 </label>
 
-                <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                  <button onClick={saveSpreadsheetUrl}>Save</button>
-                  <button onClick={exportNow}>Export now</button>
-                  <button onClick={() => setDropdownOpen(false)}>Close</button>
+                <div style={{ display: 'flex', gap: 8, marginTop: 8, }}>
+                  <button onClick={saveSpreadsheetUrl} className='menu-button'>Save</button>
+                  <button onClick={exportNow} className='menu-button'>Export now</button>
+                  <button onClick={() => setDropdownOpen(false)} className='menu-button'>Close</button>
                 </div>
               </div>
             </div>

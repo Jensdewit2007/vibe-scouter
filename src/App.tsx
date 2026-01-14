@@ -1,9 +1,9 @@
-import './App.css'
 import Navbar from './components/navbar/navbar'
 import Teams from './components/teams/teams'
 import Tierlist from './components/tierlist/tierlist'
 import Topbar from './components/topbar/topbar'
 import DetailsPage from './components/details/detailsPage'
+import PWAInstall from './components/pwaInstall/pwaInstall'
 import { useState, useEffect, useRef } from 'react'
 import type { Team } from './types'
 
@@ -42,7 +42,7 @@ function App() {
   const autoExportTimer = useRef<number | null>(null)
 
   const apiKey = import.meta.env.VITE_TBA_API_KEY
-  const eventKey = localStorage.getItem('eventKey') || '2025cur'
+  const eventKey = localStorage.getItem('eventKey') || '2026tuis'
   const STORAGE_KEY = `tierlist_${eventKey}`
   const DESCRIPTIONS_KEY = `descriptions_${eventKey}`
 
@@ -133,6 +133,8 @@ function App() {
     .sort((a, b) => a.id - b.id)
 
   const addTeamToTier = (tierName: string, team: Team, description: string) => {
+    const fullTeam = availableTeams.find(t => t.id === team.id) || team
+    
     setAvailableTeams(prev => prev.filter(t => t.id !== team.id))
 
     setTierTeams(prev => {
@@ -140,7 +142,7 @@ function App() {
       Object.keys(updated).forEach(t => {
         updated[t] = updated[t].filter(x => x.id !== team.id)
       })
-      updated[tierName] = [...updated[tierName], team]
+      updated[tierName] = [...updated[tierName], fullTeam]
       return updated
     })
 
@@ -166,9 +168,10 @@ function App() {
       }
 
       if (team) {
-        setAvailableTeams(prevA =>
-          prevA.find(t => t.id === team.id) ? prevA : [...prevA, team]
-        )
+        setAvailableTeams(prevA => {
+          const exists = prevA.find(t => t.id === team.id)
+          return exists ? prevA : [...prevA, team]
+        })
       }
 
       return updated
@@ -238,6 +241,7 @@ function App() {
 
   return (
     <>
+      <PWAInstall />
       <Topbar 
         useTeamColors={useTeamColors} 
         setUseTeamColors={setUseTeamColors}

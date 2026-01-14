@@ -77,6 +77,7 @@ function TierRow({
               ? {
                   backgroundColor: team.primaryColor || '#646cff',
                   color: team.secondaryColor || 'white',
+                  borderColor: team.primaryColor || '2px solid black',
                 }
               : {}
 
