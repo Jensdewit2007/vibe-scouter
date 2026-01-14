@@ -10,7 +10,7 @@ interface MenuProps {
 
 const SCOUT_NAMES = ['Bjorn', 'Feije', 'Gijs Koenen', 'Gijs Kruijt', 'Jens', 'Joep', 'Lex', 'Milan', 'Teun', 'Tijn']
 
-const APP_VERSION = 'pre week 1 v0.1'
+const APP_VERSION = 'pre week 1 v1.0'
 
 function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false)

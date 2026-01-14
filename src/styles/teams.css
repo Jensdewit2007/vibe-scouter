@@ -5,17 +5,19 @@
   left: 50%;
   bottom: 10%;
   transform: translateX(-50%);
-  background-color: white;
+  background-color: #1a1a1a;
   overflow-x: auto;
   overflow-y: hidden;
-  color: black;
+  color: #ffffff;
   margin-bottom: 20px;
   scrollbar-width: auto;
   -ms-overflow-style: auto;
-  border: 2px solid black;
-  padding: 10px 20px;
+  border: 1px solid #333333;
+  padding: 12px 20px;
   box-sizing: border-box;
   z-index: 50;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .teams-component::-webkit-scrollbar {
@@ -23,21 +25,22 @@
 }
 
 .teams-component::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #2a2a2a;
+  border-radius: 4px;
 }
 
 .teams-component::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #ff6600;
   border-radius: 4px;
 }
 
 .teams-component::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #ff6600;
 }
 
 .team-list {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   list-style: none;
   width: max-content;
   padding: 0;
@@ -47,21 +50,24 @@
 .team-item {
   min-width: 80px;
   text-align: center;
-  background-color: white;
-  padding: 8px 12px;
-  border-radius: 25px;
-  border: 2px solid black;
-  color: black;
+  background-color: #2a2a2a;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #333333;
+  color: #ffffff;
   cursor: grab;
   flex-shrink: 0;
   user-select: none;
-  font-weight: 600;
-  transition: all 0.2s;
+  font-weight: 700;
+  transition: all 0.2s ease;
 }
 
 .team-item:hover {
-  border-color: inherit;
-  transform: scale(1.05);
+  background-color: #ff6600;
+  color: #000000;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+  border-color: #ff6600;
 }
 
 .team-item:active {
@@ -74,8 +80,8 @@
 }
 
 .team-item.drag-over {
-  background: #eef;
-  border: 2px dashed inherit;
+  background: #2a3a2a;
+  border: 1px dashed #ff6600;
 }
 
 .search-teams-container {
@@ -87,9 +93,25 @@
 }
 
 .search-teams {
-  padding: 10px 15px;
-  border: 2px solid black;
-  border-radius: 4px;
+  padding: 12px 16px;
+  border: 1px solid #333333;
+  border-radius: 20px;
   font-size: 1rem;
-  width: 200px;
+  width: 220px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.search-teams:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.2);
+  border-color: #ff6600;
+  background-color: #333333;
+}
+
+.search-teams::placeholder {
+  color: #666666;
 }
