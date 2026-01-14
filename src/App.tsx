@@ -3,40 +3,60 @@ import Navbar from './components/navbar/navbar'
 import Teams from './components/teams/teams'
 import Tierlist from './components/tierlist/tierlist'
 import Topbar from './components/topbar/topbar'
-import { useState, useEffect } from 'react'
+import DetailsPage from './components/details/detailsPage'
+import { useState, useEffect, useRef } from 'react'
 import type { Team } from './types'
 
 type SavedTierState = {
   availableTeams: Team[]
   tierTeams: { [key: string]: Team[] }
+  teamDescriptions: { [tierName: string]: { [teamId: number]: { description: string; scoutName: string } } }
 }
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home')
   const [availableTeams, setAvailableTeams] = useState<Team[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
-  const [tierTeams, setTierTeams] = useState<{ [key: string]: Team[] }>({
+  const [userName, setUserName] = useState(localStorage.getItem('userName') || '')
+  const [tierTeams, setTierTeams] = useState<{ [key: string]: Team[] }>( {
     S: [],
     A: [],
     B: [],
     C: [],
     D: [],
   })
+  const [teamDescriptions, setTeamDescriptions] = useState<{
+    [tierName: string]: { [teamId: number]: { description: string; scoutName: string } }
+  }>( {
+    S: {},
+    A: {},
+    B: {},
+    C: {},
+    D: {},
+  })
   const [useTeamColors, setUseTeamColors] = useState(
     localStorage.getItem('useTeamColors') === 'true'
   )
+  const autoExportTimer = useRef<number | null>(null)
 
   const apiKey = import.meta.env.VITE_TBA_API_KEY
   const eventKey = localStorage.getItem('eventKey') || '2025cur'
   const STORAGE_KEY = `tierlist_${eventKey}`
+  const DESCRIPTIONS_KEY = `descriptions_${eventKey}`
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
+    const savedDescriptions = localStorage.getItem(DESCRIPTIONS_KEY)
+    
     if (saved) {
       const parsed: SavedTierState = JSON.parse(saved)
       setAvailableTeams(parsed.availableTeams)
       setTierTeams(parsed.tierTeams)
+      if (savedDescriptions) {
+        setTeamDescriptions(JSON.parse(savedDescriptions))
+      }
       setLoading(false)
       return
     }
@@ -54,7 +74,6 @@ function App() {
           name: String(team.team_number),
         }))
 
-        // Fetch colors from color API
         const teamNumbers = teams.map(t => t.id)
         const colorUrl =
           'https://api.frc-colors.com/v1/team?' +
@@ -86,6 +105,7 @@ function App() {
               JSON.stringify({
                 availableTeams: colorTeams,
                 tierTeams: { S: [], A: [], B: [], C: [], D: [] },
+                teamDescriptions: { S: {}, A: {}, B: {}, C: {}, D: {} },
               })
             )
           })
@@ -100,19 +120,19 @@ function App() {
         setError(err.message)
       })
       .finally(() => setLoading(false))
-  }, [eventKey, apiKey, STORAGE_KEY])
+  }, [eventKey, apiKey, STORAGE_KEY, DESCRIPTIONS_KEY])
 
-  // Persist changes
   useEffect(() => {
     if (loading) return
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ availableTeams, tierTeams }))
-  }, [availableTeams, tierTeams, STORAGE_KEY, loading])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ availableTeams, tierTeams, teamDescriptions }))
+    localStorage.setItem(DESCRIPTIONS_KEY, JSON.stringify(teamDescriptions))
+  }, [availableTeams, tierTeams, teamDescriptions, STORAGE_KEY, DESCRIPTIONS_KEY, loading])
 
   const filteredTeams = availableTeams
     .filter(team => team.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => a.id - b.id)
 
-  const addTeamToTier = (tierName: string, team: Team) => {
+  const addTeamToTier = (tierName: string, team: Team, description: string) => {
     setAvailableTeams(prev => prev.filter(t => t.id !== team.id))
 
     setTierTeams(prev => {
@@ -121,6 +141,18 @@ function App() {
         updated[t] = updated[t].filter(x => x.id !== team.id)
       })
       updated[tierName] = [...updated[tierName], team]
+      return updated
+    })
+
+    setTeamDescriptions(prev => {
+      const updated = { ...prev }
+      Object.keys(updated).forEach(t => {
+        delete updated[t][team.id]
+      })
+      updated[tierName] = {
+        ...updated[tierName],
+        [team.id]: { description, scoutName: userName },
+      }
       return updated
     })
   }
@@ -141,34 +173,114 @@ function App() {
 
       return updated
     })
+
+    setTeamDescriptions(prev => {
+      const updated = { ...prev }
+      delete updated[tierName][teamId]
+      return updated
+    })
   }
+
+  useEffect(() => {
+    const handler = async () => {
+      const url = localStorage.getItem('spreadsheetUrl') || ''
+      if (!url) {
+        alert('No spreadsheet URL set in Settings.')
+        return
+      }
+
+      const payload = { tierTeams, teamDescriptions, timestamp: Date.now(), scoutName: userName }
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(payload))
+        window.open(url, '_blank')
+        alert('Tier data copied to clipboard. Paste it into your spreadsheet.')
+      } catch (err) {
+        alert('Failed to copy tier data to clipboard.')
+      }
+    }
+
+    window.addEventListener('exportToSheet', handler)
+    return () => window.removeEventListener('exportToSheet', handler)
+  }, [tierTeams, teamDescriptions, userName])
+
+  async function postToWebhook(url: string, payload: any) {
+    const form = new URLSearchParams()
+    form.append('data', JSON.stringify(payload))
+    const res = await fetch(url, { method: 'POST', body: form })
+    const text = await res.text()
+    console.log('Webhook POST response:', res.status, text)
+    if (!res.ok) throw new Error(`Webhook error ${res.status}: ${text}`)
+    return text
+  }
+
+  useEffect(() => {
+    const auto = localStorage.getItem('autoExport') === 'true'
+    const url = localStorage.getItem('spreadsheetUrl') || ''
+    if (!auto || !url) return
+
+    if (autoExportTimer.current) clearTimeout(autoExportTimer.current)
+    autoExportTimer.current = window.setTimeout(async () => {
+      try {
+        const payload = { tierTeams, teamDescriptions, timestamp: Date.now(), scoutName: userName }
+        const resp = await postToWebhook(url, payload)
+        console.log('Auto export successful', resp)
+      } catch (err) {
+        console.error('Auto export failed', err)
+      }
+    }, 1000)
+
+    return () => {
+      if (autoExportTimer.current) {
+        clearTimeout(autoExportTimer.current)
+      }
+    }
+  }, [tierTeams, teamDescriptions, userName])
 
   return (
     <>
-      <Topbar useTeamColors={useTeamColors} setUseTeamColors={setUseTeamColors} />
-
-      <Tierlist
-        tierTeams={tierTeams}
-        onAddTeam={addTeamToTier}
-        onRemoveTeam={removeTeamFromTier}
-        useTeamColors={useTeamColors}
+      <Topbar 
+        useTeamColors={useTeamColors} 
+        setUseTeamColors={setUseTeamColors}
+        userName={userName}
+        setUserName={setUserName}
       />
 
-      {loading && <p>Loading teams...</p>}
-      {error && <p>Error loading teams: {error}</p>}
+      {currentPage === 'home' ? (
+        <>
+          <Tierlist
+            tierTeams={tierTeams}
+            teamDescriptions={teamDescriptions}
+            onAddTeam={addTeamToTier}
+            onRemoveTeam={removeTeamFromTier}
+            useTeamColors={useTeamColors}
+            userName={userName}
+          />
 
-      <div className="search-teams-container">
-        <input
-          type="text"
-          placeholder="Search teams..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="search-teams"
+          {loading && <p>Loading teams...</p>}
+          {error && <p>Error loading teams: {error}</p>}
+
+          <div className="search-teams-container">
+            <input
+              type="text"
+              placeholder="Search teams..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="search-teams"
+            />
+          </div>
+
+          <Teams teams={filteredTeams} useTeamColors={useTeamColors} />
+        </>
+      ) : (
+        <DetailsPage 
+          availableTeams={availableTeams}
+          tierTeams={tierTeams}
+          teamDescriptions={teamDescriptions}
+          useTeamColors={useTeamColors}
         />
-      </div>
+      )}
 
-      <Teams teams={filteredTeams} useTeamColors={useTeamColors} />
-      <Navbar />
+      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </>
   )
 }

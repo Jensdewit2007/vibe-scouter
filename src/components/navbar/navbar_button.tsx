@@ -1,13 +1,17 @@
+interface NavbarButtonProps {
+  ButtonName: string
+  isActive?: boolean
+  onClick?: () => void
+}
 
-function NavbarButton({ButtonName}: {ButtonName: string}, /*{Path}: {Path: string}*/ ){
-
+function NavbarButton({ ButtonName, isActive = false, onClick }: NavbarButtonProps) {
   return (
-    <>
-      <button className="navbar_button"
-      // Onclick event die verwijst naar pad
-      >{ButtonName}</button>
-      
-    </>
+    <button 
+      className={`navbar_button ${isActive ? 'active' : ''}`}
+      onClick={onClick}
+    >
+      {ButtonName}
+    </button>
   )
 }
 

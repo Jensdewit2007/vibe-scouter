@@ -1,19 +1,28 @@
 import NavbarButton from './navbar_button'
+import '../../App.css'
 
-function Navbar() {
+interface NavbarProps {
+  currentPage: string
+  setCurrentPage: (page: string) => void
+}
 
+function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
   return (
-    <>
-        <div className="navbar">
-            <div className="navbar_logo">
-
-            </div>
-            <div className="navbar_buttons">
-                <NavbarButton ButtonName="Home" /*path="pad naar home pagina"*//>
-                <NavbarButton ButtonName="Details"/*path="pad naar details pagina"*//>
-            </div>
-        </div>
-    </>
+    <div className="navbar">
+      <div className="navbar_logo"></div>
+      <div className="navbar_buttons">
+        <NavbarButton 
+          ButtonName="Home" 
+          isActive={currentPage === 'home'}
+          onClick={() => setCurrentPage('home')}
+        />
+        <NavbarButton 
+          ButtonName="Details"
+          isActive={currentPage === 'details'}
+          onClick={() => setCurrentPage('details')}
+        />
+      </div>
+    </div>
   )
 }
 
