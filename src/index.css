@@ -1,4 +1,5 @@
 @import './styles/base.css';
+@import './styles/splashScreen.css';
 @import './styles/topbar.css';
 @import './styles/navbar.css';
 @import './styles/teams.css';

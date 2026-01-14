@@ -4,6 +4,7 @@ import Tierlist from './components/tierlist/tierlist'
 import Topbar from './components/topbar/topbar'
 import DetailsPage from './components/details/detailsPage'
 import PWAInstall from './components/pwaInstall/pwaInstall'
+import SplashScreen from './components/pwaInstall/splashScreen'
 import { useState, useEffect, useRef } from 'react'
 import type { Team } from './types'
 
@@ -241,6 +242,7 @@ function App() {
 
   return (
     <>
+      <SplashScreen />
       <PWAInstall />
       <Topbar 
         useTeamColors={useTeamColors} 

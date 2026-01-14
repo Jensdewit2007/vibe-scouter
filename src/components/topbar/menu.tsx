@@ -10,6 +10,8 @@ interface MenuProps {
 
 const SCOUT_NAMES = ['Bjorn', 'Feije', 'Gijs Koenen', 'Gijs Kruijt', 'Jens', 'Joep', 'Lex', 'Milan', 'Teun', 'Tijn']
 
+const APP_VERSION = 'pre week 1 v0.1'
+
 function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [nameDropdownOpen, setNameDropdownOpen] = useState(false)
@@ -73,6 +75,10 @@ function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuPr
           <div className="overlay" onClick={() => setDropdownOpen(false)}>
             <div className="modal" onClick={e => e.stopPropagation()}>
               <h3>Settings</h3>
+
+              <div style={{ padding: '8px 0', color: '#666', fontSize: '0.85rem', textAlign: 'center', borderBottom: '1px solid #ddd', marginBottom: '12px' }}>
+                Version: <strong>{APP_VERSION}</strong>
+              </div>
 
               <div className="scout-name-section">
                 <label className="event-text">Scout Name:</label>
