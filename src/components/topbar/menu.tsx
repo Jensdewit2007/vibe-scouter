@@ -1,6 +1,7 @@
 import menuImg from '../../assets/menu.png'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
+
 interface MenuProps {
   useTeamColors: boolean
   setUseTeamColors: (val: boolean) => void
@@ -8,26 +9,21 @@ interface MenuProps {
   setUserName: (name: string) => void
 }
 
-const SCOUT_NAMES = ['Bjorn', 'Feije', 'Gijs Koenen', 'Gijs Kruijt', 'Jens', 'Joep', 'Lex', 'Milan', 'Teun', 'Tijn']
+const SCOUT_NAMES = [
+  'Bjorn', 'Feije', 'Gijs Koenen', 'Gijs Kruijt', 'Jens', 
+  'Joep', 'Lex', 'Milan', 'Teun', 'Tijn'
+]
 
-const APP_VERSION = 'pre week 1 v1.0'
+const APP_VERSION = 'pre week 1 v1.1'
 
 function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [nameDropdownOpen, setNameDropdownOpen] = useState(false)
 
-  const [eventCode, setEventCode] = useState(
-    localStorage.getItem('eventKey') || '2026tuis'
-  )
+  const [eventCode, setEventCode] = useState(localStorage.getItem('eventKey') || '2026tuis')
   const [inputCode, setInputCode] = useState(eventCode)
-
-  const [spreadsheetUrl, setSpreadsheetUrl] = useState(
-    localStorage.getItem('spreadsheetUrl') || ''
-  )
-
-  const [autoExport, setAutoExport] = useState(
-    localStorage.getItem('autoExport') === 'true'
-  )
+  const [spreadsheetUrl, setSpreadsheetUrl] = useState(localStorage.getItem('spreadsheetUrl') || '')
+  const [autoExport, setAutoExport] = useState(localStorage.getItem('autoExport') === 'true')
 
   function handleEventCodeChange() {
     localStorage.setItem('eventKey', inputCode)
@@ -76,14 +72,10 @@ function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuPr
             <div className="modal" onClick={e => e.stopPropagation()}>
               <h3>Settings</h3>
 
-              <div style={{ padding: '8px 0', color: '#666', fontSize: '0.85rem', textAlign: 'center', borderBottom: '1px solid #ddd', marginBottom: '12px' }}>
-                Version: <strong>{APP_VERSION}</strong>
-              </div>
-
               <div className="scout-name-section">
                 <label className="event-text">Scout Name:</label>
                 <div className="dropdown-wrapper">
-                  <button 
+                  <button
                     className="dropdown-button"
                     onClick={() => setNameDropdownOpen(!nameDropdownOpen)}
                   >
@@ -105,7 +97,28 @@ function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuPr
                 </div>
               </div>
 
-              <hr />
+              <div className="menu-controls">
+                <label className="event-text">Google Spreadsheet / Webhook URL:</label>
+                <input
+                  type="text"
+                  value={spreadsheetUrl}
+                  onChange={e => setSpreadsheetUrl(e.target.value)}
+                  placeholder="https://script.google.com/macros/s/XXX/exec"
+                  className="event-input"
+                />
+              </div>
+
+              <div className="menu-checkbox-row">
+                <label>
+                  <input type="checkbox" checked={autoExport} onChange={toggleAutoExport} />
+                    Auto export
+                </label>
+
+                <label>
+                  <input type="checkbox" checked={useTeamColors} onChange={toggleTeamColors} />
+                    Team colors
+                </label>
+              </div>
 
               <div className="event-code">
                 <label className="event-text">Event code:</label>
@@ -120,44 +133,18 @@ function Menu({ useTeamColors, setUseTeamColors, userName, setUserName }: MenuPr
                 </button>
               </div>
 
-              <div className="menu-controls" style={{ marginTop: 10 }}>
-                <label className="color-toggle">
-                  <input
-                    type="checkbox"
-                    checked={useTeamColors}
-                    onChange={toggleTeamColors}
-                  />
-                  Team colors
-                </label>
+              <div className="menu-buttons">
+                <button onClick={saveSpreadsheetUrl} className="menu-button">Save</button>
+                <button onClick={exportNow} className="menu-button">Export now</button>
+                <button onClick={() => setDropdownOpen(false)} className="menu-button">Close</button>
               </div>
 
-              <hr />
-
-              <div>
-                <label className="event-text">Google Spreadsheet / Webhook URL:</label>
-                <input
-                  type="text"
-                  value={spreadsheetUrl}
-                  onChange={e => setSpreadsheetUrl(e.target.value)}
-                  placeholder="https://script.google.com/macros/s/XXX/exec"
-                  className="event-input"
-                  style={{ width: '100%' }}
-                />
-
-                <label style={{ display: 'block', marginTop: 8 }}>
-                  <input type="checkbox" checked={autoExport} onChange={toggleAutoExport} />
-                  {' '}Auto export on change
-                </label>
-
-                <div style={{ display: 'flex', gap: 8, marginTop: 8, }}>
-                  <button onClick={saveSpreadsheetUrl} className='menu-button'>Save</button>
-                  <button onClick={exportNow} className='menu-button'>Export now</button>
-                  <button onClick={() => setDropdownOpen(false)} className='menu-button'>Close</button>
-                </div>
+              <div className="menu-version">
+                Version: <strong>{APP_VERSION}</strong>
               </div>
             </div>
           </div>,
-          document.body,
+          document.body
         )}
     </>
   )

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Team } from '../../types'
+import type { Team, ScoutNotes } from '../../types'
 import TeamDropdown from './teamDropdown'
 import MatchesList from './matchesList'
 import '../../styles/detailsPage.css'
@@ -9,7 +9,7 @@ interface DetailsPageProps {
   tierTeams: { [key: string]: Team[] }
   teamDescriptions: {
     [tierName: string]: {
-      [teamId: number]: { description: string; scoutName: string }
+      [teamId: number]: { notes: ScoutNotes; scoutName: string }
     }
   }
   useTeamColors: boolean
@@ -34,9 +34,12 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
 
   const allTeams = [
     ...availableTeams,
-    ...Object.values(tierTeams).flat()
+    ...Object.values(tierTeams).flat(),
   ]
-    .filter((team, index, self) => index === self.findIndex(t => t.id === team.id))
+    .filter(
+      (team, index, self) =>
+        index === self.findIndex(t => t.id === team.id)
+    )
     .sort((a, b) => a.id - b.id)
 
   const selectedTeam = allTeams.find(t => t.id === selectedTeamId)
@@ -60,19 +63,18 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
   }, [selectedTeam, eventKey, apiKey])
 
   const nextMatch = matches.find(
-    m => m.alliances.red.score === -1 && m.alliances.blue.score === -1
+    m => m.alliances.red.score === -1 &&
+         m.alliances.blue.score === -1
   )
 
   return (
     <div className="details-page-container">
-      {/* Centered dropdown */}
       <TeamDropdown
         teams={allTeams}
         selectedTeam={selectedTeam || null}
-        onTeamSelect={(team) => setSelectedTeamId(team.id)}
+        onTeamSelect={team => setSelectedTeamId(team.id)}
       />
 
-      {/* Right-aligned matches area */}
       <div className="details-content-row">
         {selectedTeam ? (
           <MatchesList

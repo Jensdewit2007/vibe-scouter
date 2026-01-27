@@ -1,10 +1,14 @@
-import type { Team } from '../../types'
+import type { Team, ScoutNotes } from '../../types'
 import TierRow from './tier_row'
 
 interface TierlistProps {
   tierTeams: { [key: string]: Team[] }
-  teamDescriptions: { [tierName: string]: { [teamId: number]: { description: string; scoutName: string } } }
-  onAddTeam: (tierName: string, team: Team, description: string) => void
+  teamDescriptions: {
+    [tierName: string]: {
+      [teamId: number]: { notes: ScoutNotes; scoutName: string }
+    }
+  }
+  onAddTeam: (tierName: string, team: Team, notes: ScoutNotes) => void
   onRemoveTeam: (tierName: string, teamId: number) => void
   useTeamColors: boolean
   userName: string
@@ -26,7 +30,7 @@ function Tierlist({
           TierName={tierName}
           teams={teams}
           teamDescriptions={teamDescriptions[tierName] || {}}
-          onAddTeam={(team, description) => onAddTeam(tierName, team, description)}
+          onAddTeam={(team, notes) => onAddTeam(tierName, team, notes)}
           onRemoveTeam={teamId => onRemoveTeam(tierName, teamId)}
           useTeamColors={useTeamColors}
           userName={userName}

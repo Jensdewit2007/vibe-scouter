@@ -6,7 +6,15 @@ export interface Team {
 }
 
 export interface RankedTeam extends Team {
-  description: string
+  notes: ScoutNotes
   scoutName: string
   timestamp: number
+}
+
+export interface ScoutNotes {
+  driverSkill: string
+  hardwareElectro: string
+  communication: string
+  basicGameKnowledge: string
+  underTrench: boolean
 }

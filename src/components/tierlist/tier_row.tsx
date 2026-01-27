@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import type { Team } from '../../types'
-import DescriptionModal from '../tierlist/descriptionModal'
+import type { Team, ScoutNotes } from '../../types'
+import DescriptionModal from './descriptionModal'
 
 interface TierRowProps {
   TierName: string
   teams: Team[]
-  teamDescriptions: { [teamId: number]: { description: string; scoutName: string } }
-  onAddTeam: (team: Team, description: string) => void
-  onRemoveTeam: (teamId: number) => void
+  teamDescriptions: {
+    [teamId: number]: { notes: ScoutNotes; scoutName: string }
+  }
+  onAddTeam: (team: Team, notes: ScoutNotes) => void
+  onRemoveTeam: (teamId: number) => void // <-- keep this
   useTeamColors: boolean
   userName: string
 }
@@ -17,49 +19,37 @@ function TierRow({
   teams,
   teamDescriptions,
   onAddTeam,
-  onRemoveTeam,
   useTeamColors,
   userName,
 }: TierRowProps) {
   const [dragOver, setDragOver] = useState(false)
   const [pendingTeam, setPendingTeam] = useState<Team | null>(null)
+  const [editingTeam, setEditingTeam] = useState<Team & { notes?: ScoutNotes } | null>(null)
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
     setDragOver(true)
-  }
-
-  const handleDragLeave = () => {
-    setDragOver(false)
   }
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     setDragOver(false)
 
-    const teamId = parseInt(e.dataTransfer.getData('teamId'))
+    const teamId = Number(e.dataTransfer.getData('teamId'))
     const teamName = e.dataTransfer.getData('teamName')
-    const team = { id: teamId, name: teamName }
-    
-    setPendingTeam(team)
+
+    setPendingTeam({ id: teamId, name: teamName })
   }
 
-  const handleDescriptionSubmit = (description: string) => {
-    if (pendingTeam) {
-      onAddTeam(pendingTeam, description)
-      setPendingTeam(null)
-    }
+  const handleConfirm = (notes: ScoutNotes, team: Team) => {
+    onAddTeam(team, notes)
+    setPendingTeam(null)
+    setEditingTeam(null)
   }
 
-  const handleTeamDragStart = (
-    e: React.DragEvent<HTMLSpanElement>,
-    teamId: number,
-    teamName: string
-  ) => {
-    e.dataTransfer.effectAllowed = 'move'
-    e.dataTransfer.setData('teamId', teamId.toString())
-    e.dataTransfer.setData('teamName', teamName)
+  const handleTeamClick = (team: Team) => {
+    const existingNotes = teamDescriptions[team.id]?.notes
+    setEditingTeam({ ...team, notes: existingNotes })
   }
 
   return (
@@ -69,7 +59,7 @@ function TierRow({
         <div
           className={`tier-content ${dragOver ? 'drag-over' : ''}`}
           onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
+          onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
           {teams.map(team => {
@@ -77,7 +67,6 @@ function TierRow({
               ? {
                   backgroundColor: team.primaryColor || '#646cff',
                   color: team.secondaryColor || 'white',
-                  borderColor: team.primaryColor || '2px solid black',
                 }
               : {}
 
@@ -86,10 +75,13 @@ function TierRow({
                 key={team.id}
                 className="tier-team-item"
                 draggable
-                onDragStart={e => handleTeamDragStart(e, team.id, team.name)}
-                onClick={() => onRemoveTeam(team.id)}
+                onDragStart={e => {
+                  e.dataTransfer.setData('teamId', team.id.toString())
+                  e.dataTransfer.setData('teamName', team.name)
+                }}
+                onClick={() => handleTeamClick(team)}
                 style={style}
-                title={teamDescriptions[team.id]?.description}
+                title={teamDescriptions[team.id]?.notes?.driverSkill}
               >
                 {team.name}
               </span>
@@ -103,8 +95,18 @@ function TierRow({
           team={pendingTeam}
           tierName={TierName}
           userName={userName}
-          onConfirm={handleDescriptionSubmit}
+          onConfirm={notes => handleConfirm(notes, pendingTeam)}
           onCancel={() => setPendingTeam(null)}
+        />
+      )}
+
+      {editingTeam && (
+        <DescriptionModal
+          team={editingTeam}
+          tierName={TierName}
+          userName={userName}
+          onConfirm={notes => handleConfirm(notes, editingTeam)}
+          onCancel={() => setEditingTeam(null)}
         />
       )}
     </>
