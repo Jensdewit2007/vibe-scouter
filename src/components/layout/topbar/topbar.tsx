@@ -1,4 +1,4 @@
-import Menu from '../topbar/menu'
+import Menu from './menu'
 
 interface TopbarProps {
   useTeamColors: boolean

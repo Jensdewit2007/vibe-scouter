@@ -1,0 +1,41 @@
+/* tiles.css */
+
+.tiles-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.metric-tile {
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
+  border-radius: 14px;
+  padding: 1rem;
+  width: 140px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.metric-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ff6600;
+}
+
+.metric-subtext {
+  font-size: 0.65rem;
+  color: #777777;
+  margin-top: 0.25rem;
+}

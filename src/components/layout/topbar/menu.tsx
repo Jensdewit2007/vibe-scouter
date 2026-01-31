@@ -1,4 +1,4 @@
-import menuImg from '../../assets/menu.png'
+import menuImg from '../../../assets/menu.png'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 

@@ -1,8 +1,8 @@
 import NavbarButton from './navbar_button'
 
 interface NavbarProps {
-  currentPage: string
-  setCurrentPage: (page: string) => void
+  currentPage: 'home' | 'details' | 'matches'
+  setCurrentPage: (page: 'home' | 'details' | 'matches') => void
 }
 
 function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
@@ -19,6 +19,11 @@ function Navbar({ currentPage, setCurrentPage }: NavbarProps) {
           ButtonName="Details"
           isActive={currentPage === 'details'}
           onClick={() => setCurrentPage('details')}
+        />
+        <NavbarButton 
+          ButtonName="Matches"
+          isActive={currentPage === 'matches'}
+          onClick={() => setCurrentPage('matches')}
         />
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import type { Team } from '../../types'
-import '../../styles/teams.css'
+import type { Team } from '../../../types'
 
 interface TeamsProps {
   teams: Team[]

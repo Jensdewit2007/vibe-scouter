@@ -9,6 +9,7 @@ interface Match {
     red: { team_keys: string[]; score: number }
     blue: { team_keys: string[]; score: number }
   }
+  time?: number
 }
 
 interface MatchesListProps {
@@ -18,9 +19,7 @@ interface MatchesListProps {
 }
 
 function MatchesList({ nextMatch, allMatches, selectedTeam }: MatchesListProps) {
-  if (!selectedTeam) {
-    return <div className="no-team-selected">Select a team to view matches</div>
-  }
+  if (!selectedTeam) return <div className="no-team-selected">Select a team to view matches</div>
 
   const getAlliance = (match: Match) => {
     const color = match.alliances.red.team_keys.includes(`frc${selectedTeam.id}`) ? 'red' : 'blue'
@@ -68,22 +67,17 @@ function MatchesList({ nextMatch, allMatches, selectedTeam }: MatchesListProps) 
             {sortedMatches.map(match => {
               const { color, score, oppScore, result } = getAlliance(match)
               const isPlayed = score !== -1
-              const isNext = nextMatch?.key === match.key
-
               return (
-                <div
-                  key={match.key}
-                  className={`match-row ${isNext ? 'next-match' : isPlayed ? 'played' : 'upcoming'}`}
-                >
-                  <span className={`match-number ${color}-alliance`}>
-                    {match.comp_level.toUpperCase()} {match.match_number}
-                  </span>
-                  {isPlayed && (
+                <div key={match.key} className={`match-row ${isPlayed ? 'played' : 'upcoming'}`}>
+                  <span className={`match-number ${color}-alliance`}>{match.comp_level.toUpperCase()} {match.match_number}</span>
+                  {isPlayed ? (
                     <>
                       <span className={`score ${color}-score`}>{score}</span>
                       <span className={`score ${color === 'red' ? 'blue' : 'red'}-score`}>{oppScore}</span>
                       <span className={`result ${result.toLowerCase()}`}>{result}</span>
                     </>
+                  ) : (
+                    <div className="upcoming-placeholder">Upcoming</div>
                   )}
                 </div>
               )
