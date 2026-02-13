@@ -13,23 +13,44 @@
   position: fixed;
   top: var(--topbar-height);
   left: 2%;
-  height: calc(90vh - var(--topbar-height) - var(--navbar-height));
-  padding: 12px;
+  width: 30%;               /* same as right column */
+  height: calc(100vh - var(--topbar-height) - var(--navbar-height));
   display: flex;
-  background-color: #1a1a1a;
   flex-direction: column;
-  overflow: hidden;
+}
+
+.details-tiles-container {
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
   border-radius: 16px;
-  box-sizing: border-box;
+  padding: 1.5rem;
+  display: grid; /* change from flex to grid */
+  grid-template-columns: repeat(2, 1fr); /* 2 tiles per row */
+  gap: 12px;
+  height: 90%; /* fill left column */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .tiles-column {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
 }
 
+.metric-tile {
+  max-height: 175px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.tiles-column {
+  display: contents; /* allows tiles to inherit the grid from parent */
+}
 /* ===============================
    CENTER — Dropdown
    =============================== */
@@ -38,12 +59,21 @@
   top: var(--topbar-height);
   left: 50%;
   transform: translateX(-50%);
-  width: 240px;
+  width: 400px;
   z-index: 50;
 }
 
 .dropdown-wrapper {
   width: 100%;
+}
+
+.details-center img.center-image {
+  margin-top: 25%;
+  width: 100%;
+  height: auto; /* maintain aspect ratio */
+  max-width: 400px; /* same as the dropdown width */
+  border-radius: 12px; /* optional styling */
+  object-fit: contain; /* ensure the image fits nicely */
 }
 
 /* ===============================

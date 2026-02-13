@@ -3,7 +3,10 @@ import type { Team, ScoutNotes } from '../../types'
 import TeamDropdown from './teamDropdown'
 import MatchesList from './matchesList'
 import PointsTile from './tiles/pointsTile'
+import StatusTile from './tiles/statusTile'
+import RankingTile from './tiles/rankingTile'
 import '../../styles/detailsPage.css'
+import '../../../public/test.jpeg'
 
 interface DetailsPageProps {
   availableTeams: Team[]
@@ -85,15 +88,21 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
     <>
       {/* LEFT COLUMN — Tiles */}
       <div className="details-left">
-        <div className="tiles-column">
-          <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Auto" metric="auto_points" />
-          <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Teleop" metric="teleop_points" />
-          <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Endgame" metric="endgame_points" />
-          <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Total" metric="total_points" />
+        <div className="details-tiles-container">
+          <div className="tiles-column">
+            <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Auto" metric="auto_points" />
+            <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Teleop" metric="teleop_points" />
+            <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Endgame" metric="endgame_points" />
+            <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="Total" metric="total_points" />
+
+            <PointsTile teamNumber={selectedTeam?.id || 0} eventKey={eventKey} title="OPR" metric="opr" />
+            <StatusTile title="Trench" status="good" />
+
+            <RankingTile teamNumber={selectedTeam?.id || null} />
+          </div>
         </div>
       </div>
 
-      {/* CENTER — Dropdown */}
       <div className="details-center">
         <div className="dropdown-wrapper">
           <TeamDropdown
@@ -102,6 +111,13 @@ function DetailsPage({ availableTeams, tierTeams }: DetailsPageProps) {
             onTeamSelect={team => setSelectedTeamId(team.id)}
           />
         </div>
+  
+        {/* Middle column image */}
+        <img
+          src="/test.jpeg"
+          alt="Team Visual"
+          className="center-image"
+        />
       </div>
 
       {/* RIGHT COLUMN — Matches */}
